@@ -61,6 +61,23 @@ class Rope {
 		}
 	}
 
+	public rebuild() {
+		if (this.left) {
+			this.value = this.left.toString()
+		}
+
+		if (this.right) {
+			this.value += this.right.toString();
+		}
+
+		this.weight = this.value.length;
+
+		delete this.left;
+		delete this.right;
+
+		this.balance();
+	}
+
 	private add(left: Rope, right: Rope): void {
 		this.left = left;
 		this.right = right;
@@ -83,19 +100,27 @@ class Rope {
 	public insert(position: number, value: string) {
 		let rope = new Rope(value);
 		let right = this.split(position);
+		let newRope = this.concat(rope);
 
-
-		let something = this.concat(rope);
-		something = something.concat(right);
-		console.log(JSON.stringify(something));
+		return newRope.concat(right);
 	}
 
 	public toString(): string {
-		if (typeof this.value == 'undefined') {
-			return this.left.toString() + this.right.toString();
-		} else {
+		if (typeof this.value != 'undefined') {
 			return this.value;
 		}
+
+		let string: string = '';
+
+		if(this.left) {
+			string = this.left.toString();
+		}
+
+		if (this.right) {
+			string += this.right.toString();
+		}
+
+		return string;
 	}
 
 	public concat(rope: Rope) {
@@ -138,3 +163,5 @@ class Rope {
 }
 
 let rope: Rope = new Rope('some random text that I want to generate a tree structure out of');
+rope = rope.insert(8, ' hello ');
+rope.rebuild();
